@@ -1,0 +1,134 @@
+NAME
+    McBain::WithPSGI - Load a McBain API as a RESTful PSGI web service
+
+SYNOPSIS
+            # write your API as you normally would, and create
+            # a simple psgi file:
+
+            #!/usr/bin/perl -w
+
+            BEGIN { $ENV{MCBAIN_WITH} = 'WithPSGI'; }
+
+            use warnings;
+            use strict;
+            use MyAPI;
+
+            my $app = MyAPI->to_app;
+
+DESCRIPTION
+    "McBain::WithPSGI" turns your McBain API into a RESTful PSGI web service
+    based on Plack, thus making "McBain" a web application framework.
+
+    The created web service will be a JSON-in JSON-out service. Requests to
+    your application are expected to have a "Content-Type" of
+    "application/json; charset=UTF-8". The JSON body of a request will be
+    the payload. The results of the API will be formatted into JSON as well.
+
+    Note that if an API method does not return a hash-ref, this runner
+    module will automatically turn it into a hash-ref to ensure that
+    conversion into JSON will be possible. The created hash-ref will have
+    one key - holding the method's name, with whatever was returned from the
+    method as its value. For example, if method "GET:/divide" in topic
+    "/math" returns an integer (say 7), then the client will get the JSON "{
+    "GET:/math/divide": 7 }".
+
+METHODS EXPORTED TO YOUR API
+    None.
+
+METHODS REQUIRED BY MCBAIN
+  init( $target )
+    Makes the root topic of your API inherit Plack::Component, so that it
+    officially becomes a Plack app. This will provide your API with the
+    "to_app()" method.
+
+  generate_env( $psgi_env )
+    Receives the PSGI env hash-ref and creates McBain's standard env
+    hash-ref from it.
+
+  generate_res( $env, $res )
+    Converts the result of an API method to JSON, and returns a standard
+    PSGI response array-ref.
+
+  handle_exception( $err )
+    Formats exceptions into JSON and returns a standard PSGI array-ref.
+
+CONFIGURATION AND ENVIRONMENT
+    No configuration files are required. To tell McBain to use this runner
+    module, the "MCBAIN_WITH" environment variable must be set to
+    "WithPSGI". See the "SYNOPSIS" for an example.
+
+DEPENDENCIES
+    "McBain::WithPSGI" depends on the following CPAN modules:
+
+    *   Carp
+
+    *   JSON
+
+    *   Plack
+
+INCOMPATIBILITIES WITH OTHER MODULES
+    None reported.
+
+BUGS AND LIMITATIONS
+    Please report any bugs or feature requests to
+    "bug-McBain-WithPSGI@rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=McBain-WithPSGI>.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+            perldoc McBain::WithPSGI
+
+    You can also look for information at:
+
+    *   RT: CPAN's request tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=McBain-WithPSGI>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/McBain-WithPSGI>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/McBain-WithPSGI>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/McBain-WithPSGI/>
+
+AUTHOR
+    Ido Perlmuter <ido@ido50.net>
+
+LICENSE AND COPYRIGHT
+    Copyright (c) 2013, Ido Perlmuter "ido@ido50.net".
+
+    This module is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself, either version 5.8.1 or any later
+    version. See perlartistic and perlgpl.
+
+    The full text of the license can be found in the LICENSE file included
+    with this module.
+
+DISCLAIMER OF WARRANTY
+    BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+    FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+    PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+    ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+    YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+    NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+    IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+    REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE LIABLE
+    TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR
+    CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
+    SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+    RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+    FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+    SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGES.
+
