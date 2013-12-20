@@ -1,6 +1,8 @@
 Revision history for McBain-WithPSGI
 
 {{$NEXT}}
+
+1.001000  2013-12-20 15:41:28 Asia/Jerusalem
 	- Added support for OPTIONS requests
 	- Added Plack v1.0029 as a test requirement since I'm using its
 	  new interface introduced in that version
