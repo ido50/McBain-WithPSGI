@@ -1,6 +1,9 @@
 Revision history for McBain-WithPSGI
 
 {{$NEXT}}
+	- Added support for OPTIONS requests
+	- Added Plack v1.0029 as a test requirement since I'm using its
+	  new interface introduced in that version
 
 1.000000  2013-12-19 00:52:10 Asia/Jerusalem
 	- First public release

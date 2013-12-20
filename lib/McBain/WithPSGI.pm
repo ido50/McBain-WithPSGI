@@ -10,7 +10,7 @@ use JSON;
 use Plack::Request;
 use Plack::Component;
 
-our $VERSION = "1.000000";
+our $VERSION = "1.001000";
 $VERSION = eval $VERSION;
 
 my $json = JSON->new->utf8->convert_blessed;
@@ -49,6 +49,15 @@ turn it into a hash-ref to ensure that conversion into JSON will be possible. Th
 hash-ref will have one key - holding the method's name, with whatever was returned from the
 method as its value. For example, if method C<GET:/divide> in topic C</math> returns an
 integer (say 7), then the client will get the JSON C<{ "GET:/math/divide": 7 }>.
+
+=head2 SUPPORTED HTTP METHODS
+
+This runner support all methods natively supported by L<McBain>. That is: C<GET>, C<PUT>,
+C<POST>, C<DELETE> and C<OPTIONS>. To add support for C<HEAD> requests, use L<Plack::Middleware::Head>.
+
+The C<OPTIONS> method is special. It returns a list of all HTTP methods allowed by a specific
+route (in the C<Allow> header). The response body will be the same hash-ref returned by
+C<McBain> for C<OPTIONS> requests, JSON encoded.
 
 =head1 METHODS EXPORTED TO YOUR API
 
@@ -102,10 +111,16 @@ response array-ref.
 sub generate_res {
 	my ($self, $env, $res) = @_;
 
+	my @headers = ('Content-Type' => 'application/json; charset=UTF-8');
+
+	if ($env->{METHOD} eq 'OPTIONS') {
+		push(@headers, 'Allow' => join(',', keys %$res));
+	}
+
 	$res = { $env->{METHOD}.':'.$env->{ROUTE} => $res }
 		unless ref $res eq 'HASH';
 
-	return [200, ['Content-Type' => 'application/json; charset=UTF-8'], [$json->encode($res)]];
+	return [200, \@headers, [$json->encode($res)]];
 }
 
 =head2 handle_exception( $err )
