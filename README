@@ -7,11 +7,9 @@ SYNOPSIS
 
             #!/usr/bin/perl -w
 
-            BEGIN { $ENV{MCBAIN_WITH} = 'WithPSGI'; }
-
             use warnings;
             use strict;
-            use MyAPI;
+            use MyAPI -withPSGI;
 
             my $app = MyAPI->to_app;
 
@@ -31,6 +29,16 @@ DESCRIPTION
     method as its value. For example, if method "GET:/divide" in topic
     "/math" returns an integer (say 7), then the client will get the JSON "{
     "GET:/math/divide": 7 }".
+
+  SUPPORTED HTTP METHODS
+    This runner support all methods natively supported by McBain. That is:
+    "GET", "PUT", "POST", "DELETE" and "OPTIONS". To add support for "HEAD"
+    requests, use Plack::Middleware::Head.
+
+    The "OPTIONS" method is special. It returns a list of all HTTP methods
+    allowed by a specific route (in the "Allow" header). The response body
+    will be the same hash-ref returned by "McBain" for "OPTIONS" requests,
+    JSON encoded.
 
 METHODS EXPORTED TO YOUR API
     None.
@@ -53,9 +61,7 @@ METHODS REQUIRED BY MCBAIN
     Formats exceptions into JSON and returns a standard PSGI array-ref.
 
 CONFIGURATION AND ENVIRONMENT
-    No configuration files are required. To tell McBain to use this runner
-    module, the "MCBAIN_WITH" environment variable must be set to
-    "WithPSGI". See the "SYNOPSIS" for an example.
+    No configuration files are required.
 
 DEPENDENCIES
     "McBain::WithPSGI" depends on the following CPAN modules:

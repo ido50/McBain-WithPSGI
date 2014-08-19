@@ -10,7 +10,7 @@ use JSON;
 use Plack::Request;
 use Plack::Component;
 
-our $VERSION = "1.001000";
+our $VERSION = "2.000000";
 $VERSION = eval $VERSION;
 
 my $json = JSON->new->utf8->convert_blessed;
@@ -26,11 +26,9 @@ McBain::WithPSGI - Load a McBain API as a RESTful PSGI web service
 
 	#!/usr/bin/perl -w
 
-	BEGIN { $ENV{MCBAIN_WITH} = 'WithPSGI'; }
-
 	use warnings;
 	use strict;
-	use MyAPI;
+	use MyAPI -withPSGI;
 
 	my $app = MyAPI->to_app;
 
@@ -136,11 +134,9 @@ sub handle_exception {
 }
 
 =head1 CONFIGURATION AND ENVIRONMENT
-   
-No configuration files are required. To tell L<McBain> to use this runner module,
-the C<MCBAIN_WITH> environment variable must be set to C<WithPSGI>. See the
-L</"SYNOPSIS"> for an example.
- 
+
+No configuration files are required.
+
 =head1 DEPENDENCIES
  
 C<McBain::WithPSGI> depends on the following CPAN modules:

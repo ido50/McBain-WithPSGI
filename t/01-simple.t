@@ -1,14 +1,12 @@
 #!/usr/bin/perl -w
 
-BEGIN { $ENV{MCBAIN_WITH} = 'WithPSGI'; }
-
 use lib 't/lib';
 use warnings;
 use strict;
 
 use HTTP::Request;
 use JSON;
-use Mendoza;
+use Mendoza -withPSGI;
 use Plack::Test;
 use Test::More;
 
