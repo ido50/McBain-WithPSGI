@@ -4,8 +4,20 @@ use McBain;
 
 get '/' => (
 	description => 'Returns the name of the API',
+	params => {
+		message => { default => 'MEN-DO-ZAAAAAAAAAAAAA!!!!!!!!!!!' }
+	},
 	cb => sub {
-		return 'MEN-DO-ZAAAAAAAAAAAAA!!!!!!!!!!!';
+		return $_[1]->{message};
+	}
+);
+
+get '/query' => (
+	params => {
+		array => { array => 1, min_length => 2 }
+	},
+	cb => sub {
+		return join(' ', @{$_[1]->{array}});
 	}
 );
 

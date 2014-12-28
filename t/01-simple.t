@@ -12,6 +12,9 @@ use Test::More;
 
 my @tests = (
 #	[METHOD,	PATH,						#PARAMS, #EXPECTED, #DESC]
+	['GET',	'/',						{}, 'MEN-DO-ZAAAAAAAAAAAAA!!!!!!!!!!!'],
+	['GET',	'/?message=QUERY_STRING_YEAHHH',	{}, 'QUERY_STRING_YEAHHH'],
+	['GET',	'/query?array=Hello&array=World',	{}, 'Hello World'],
 	['GET',	'/status',					{}, 'ALL IS WELL', 'status ok'],
 	['GET',	'/math',					{}, 'MATH IS AWESOME', 'math ok #1'],
 	['GET',	'/math/',					{}, 'MATH IS AWESOME', 'math ok #2'],
@@ -61,7 +64,8 @@ foreach (@tests) {
 		my $content = decode_json($res->content);
 
 		if ($res->is_success) {
-			$content = $content->{$_->[0].':'.$_->[1]};
+			my $path = $_->[1]; $path =~ s/\?.+$//;
+			$content = $content->{$_->[0].':'.$path};
 		} else {
 			$content = $res->code;
 		}

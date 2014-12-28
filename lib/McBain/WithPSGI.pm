@@ -10,7 +10,7 @@ use JSON;
 use Plack::Request;
 use Plack::Component;
 
-our $VERSION = "2.000000";
+our $VERSION = "2.001000";
 $VERSION = eval $VERSION;
 
 my $json = JSON->new->utf8->convert_blessed;
@@ -57,6 +57,37 @@ The C<OPTIONS> method is special. It returns a list of all HTTP methods allowed 
 route (in the C<Allow> header). The response body will be the same hash-ref returned by
 C<McBain> for C<OPTIONS> requests, JSON encoded.
 
+=head2 CAVEATS AND CONSIDERATIONS
+
+The C<HTTP> protocol does not allow C<GET> requests to have content, so your C<GET> routes will
+not be able to receive parameters from a request's JSON body as all other methods do.
+If your get requests I<must> get parameters (for example, a route that returns a list of objects
+with support for pagination), C<McBain::WithPSGI> supports parameters from the query string. They
+will be validated like all parameters, and they can be used in non-C<GET> requests too. Note that
+they take precedence over body parameters.
+
+The downside to this is that the parameters cannot be complex structures, though if the query string
+defines a certain key several times, its generated value will be an array reference. For example,
+let's look at the following route:
+
+	get '/params_from_query' => (
+		params => {
+			some_string => { required => 1 },
+			some_array => { array => 1, min_length => 2 }
+		},
+		cb => sub {
+			my ($api, $params) = @_;
+			return $params;
+		}
+	);
+
+This route isn't particularly interesting, as it simply returns the parameters it receives. It does,
+however, enforces the existance of the C<some_string> parameter, and expects C<some_array> to be an
+array reference of at least 2 items. A request to C</params_from_query?some_string=this_is_my_string&some_array=Hello&some_array=World> will yield the
+following result:
+
+	{ some_string => 'this_is_my_string', some_array => ['Hello', 'World'] }
+
 =head1 METHODS EXPORTED TO YOUR API
 
 None.
@@ -92,10 +123,19 @@ sub generate_env {
 
 	my $req = Plack::Request->new($psgi_env);
 
+	my $payload = $req->content ? $json->decode($req->content) : {};
+
+	# also take parameters from query string, if any
+	# and let them have precedence over request content
+	my $query = $req->query_parameters->mixed;
+	foreach (keys %$query) {
+		$payload->{$_} = $query->{$_};
+	}
+
 	return {
 		METHOD	=> $req->method,
 		ROUTE		=> $req->path,
-		PAYLOAD	=> $req->content ? $json->decode($req->content) : {}
+		PAYLOAD	=> $payload
 	};
 }
 

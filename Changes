@@ -1,6 +1,10 @@
 Revision history for McBain-WithPSGI
 
 {{$NEXT}}
+	- Query string parameters are now added to request payloads,
+	  mostly useful for GET requests which don't have content
+
+2.000000  2014-08-19 18:55:03+03:00 Asia/Jerusalem
 	- Updated documentation and test as McBain no longer uses the MCBAIN_WITH
 	  environment variable for loading a runner module.
 
