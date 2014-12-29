@@ -59,12 +59,12 @@ C<McBain> for C<OPTIONS> requests, JSON encoded.
 
 =head2 CAVEATS AND CONSIDERATIONS
 
-The C<HTTP> protocol does not allow C<GET> requests to have content, so your C<GET> routes will
+The HTTP protocol does not allow C<GET> requests to have content, so your C<GET> routes will
 not be able to receive parameters from a request's JSON body as all other methods do.
-If your get requests I<must> get parameters (for example, a route that returns a list of objects
-with support for pagination), C<McBain::WithPSGI> supports parameters from the query string. They
-will be validated like all parameters, and they can be used in non-C<GET> requests too. Note that
-they take precedence over body parameters.
+If your C<GET> routes I<must> receive parameters (for example, you might have a route that
+returns a list of objects with support for pagination), C<McBain::WithPSGI> supports parameters
+from the query string. They will be validated like all parameters, and they can be used in
+non-C<GET> requests too. Note that they take precedence over body parameters.
 
 The downside to this is that the parameters cannot be complex structures, though if the query string
 defines a certain key several times, its generated value will be an array reference. For example,
@@ -82,11 +82,11 @@ let's look at the following route:
 	);
 
 This route isn't particularly interesting, as it simply returns the parameters it receives. It does,
-however, enforces the existance of the C<some_string> parameter, and expects C<some_array> to be an
+however, enforce the existence of the C<some_string> parameter, and expects C<some_array> to be an
 array reference of at least 2 items. A request to C</params_from_query?some_string=this_is_my_string&some_array=Hello&some_array=World> will yield the
 following result:
 
-	{ some_string => 'this_is_my_string', some_array => ['Hello', 'World'] }
+	{ "some_string": "this_is_my_string", "some_array": ["Hello", "World"] }
 
 =head1 METHODS EXPORTED TO YOUR API
 
