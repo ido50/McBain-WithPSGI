@@ -6,14 +6,14 @@ use warnings;
 use strict;
 
 use Carp;
-use JSON;
+use JSON::MaybeXS qw/JSON/;
 use Plack::Request;
 use Plack::Component;
 
-our $VERSION = "2.001000";
+our $VERSION = "2.001001";
 $VERSION = eval $VERSION;
 
-my $json = JSON->new->utf8->convert_blessed;
+my $json = JSON->new->utf8->allow_blessed->convert_blessed;
 
 =head1 NAME
  
@@ -185,7 +185,7 @@ C<McBain::WithPSGI> depends on the following CPAN modules:
 
 =item * L<Carp>
 
-=item * L<JSON>
+=item * L<JSON::MaybeXS>
  
 =item * L<Plack>
  
@@ -235,7 +235,7 @@ Ido Perlmuter <ido@ido50.net>
  
 =head1 LICENSE AND COPYRIGHT
  
-Copyright (c) 2013, Ido Perlmuter C<< ido@ido50.net >>.
+Copyright (c) 2013-2015, Ido Perlmuter C<< ido@ido50.net >>.
  
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself, either version
