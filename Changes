@@ -1,6 +1,8 @@
 Revision history for McBain-WithPSGI
 
 {{$NEXT}}
+
+2.001001  2015-01-03 19:08:43+02:00 Asia/Jerusalem
 	- Replaced JSON with JSON::MaybeXS. Added the missing "allow_blessed"
 	  on the JSON object, to make sure objects are converted to JSON.
 

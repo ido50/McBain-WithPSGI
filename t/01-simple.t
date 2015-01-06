@@ -5,8 +5,9 @@ use warnings;
 use strict;
 
 use HTTP::Request;
-use JSON;
-use Mendoza -withPSGI;
+use JSON::MaybeXS qw/encode_json decode_json/;
+use Mendoza;
+use McBain::WithPSGI;
 use Plack::Test;
 use Test::More;
 
@@ -43,7 +44,7 @@ my @tests = (
 	}, 'OPTIONS ok']
 );
 
-my $app = Mendoza->new->to_app;
+my $app = McBain::WithPSGI->new(Mendoza->new)->to_app;
 my $test = Plack::Test->create($app);
 
 my $headers = [
