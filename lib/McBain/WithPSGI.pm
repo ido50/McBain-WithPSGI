@@ -37,7 +37,7 @@ sub call {
 	}
 
 	try {
-		my $res = $self->{api}->call($req->method.':'.$req->path, $payload);
+		my $res = $self->{api}->call($req->method.':'.$req->path, $payload, __PACKAGE__, $psgi_env);
 		$res = { $req->method.':'.$req->path => $res }
 			unless ref $res eq 'HASH';
 
