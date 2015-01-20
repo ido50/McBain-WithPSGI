@@ -53,6 +53,9 @@ sub call {
 			[$json->encode($res)]
 		];
 	} catch {
+		$_ = { code => 500, error => $_ }
+			unless ref $_;
+
 		return [
 			delete($_->{code}),
 			['Content-Type' => 'application/json; charset=UTF-8'],
